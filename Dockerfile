@@ -1,16 +1,18 @@
-# Usa a imagem oficial do Amazon Corretto 21 (Java 21)
+# --- Stage 1: Build da aplicação com Maven ---
+FROM maven:3.9.6-amazoncorretto-21 AS builder
+
+# Copia o código-fonte
+WORKDIR /app
+COPY . .
+
+# Build do projeto (gera o .jar em /app/target)
+RUN mvn clean package -DskipTests
+
+# --- Stage 2: Runtime com Corretto 21 ---
 FROM amazoncorretto:21
 
-# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 
-# Copia o arquivo JAR da sua aplicação para dentro do contêiner
-# Certifique-se de que o build gerou o .jar corretamente em build/libs/
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
-
-# Expõe a porta padrão (ajuste conforme necessário)
 EXPOSE 8080
-
-# Comando para iniciar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
