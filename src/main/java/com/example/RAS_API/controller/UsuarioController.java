@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.RAS_API.model.Usuario;
+import com.example.RAS_API.entity.Usuario;
 import com.example.RAS_API.repository.UsuarioRepository;
 
 @RestController
