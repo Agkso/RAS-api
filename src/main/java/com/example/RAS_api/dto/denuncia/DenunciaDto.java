@@ -16,6 +16,8 @@ public class DenunciaDto {
     private Long id;
     private String descricao;
     private String localizacao;
+    private Double latitude;
+    private Double longitude;
     private String fotoUrl;
     private LocalDateTime dataCriacao;
     private String status;

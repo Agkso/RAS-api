@@ -34,6 +34,8 @@ public class DenunciaService {
         Denuncia denuncia = new Denuncia();
         denuncia.setDescricao(denunciaDto.getDescricao());
         denuncia.setLocalizacao(denunciaDto.getLocalizacao());
+        denuncia.setLatitude(denunciaDto.getLatitude());
+        denuncia.setLongitude(denunciaDto.getLongitude());
         // Só define fotoUrl se não for null ou vazio
         if (denunciaDto.getFotoUrl() != null && !denunciaDto.getFotoUrl().trim().isEmpty()) {
             denuncia.setFotoUrl(denunciaDto.getFotoUrl());
@@ -101,6 +103,8 @@ public class DenunciaService {
         dto.setId(denuncia.getId());
         dto.setDescricao(denuncia.getDescricao());
         dto.setLocalizacao(denuncia.getLocalizacao());
+        dto.setLatitude(denuncia.getLatitude());
+        dto.setLongitude(denuncia.getLongitude());
         dto.setFotoUrl(denuncia.getFotoUrl());
         dto.setDataCriacao(denuncia.getDataCriacao());
         dto.setStatus(denuncia.getStatus().name());

@@ -29,6 +29,12 @@ public class Denuncia {
     @NotNull
     private String localizacao;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @Column(name = "foto_url")
     private String fotoUrl; // URL da imagem, se houver
 
