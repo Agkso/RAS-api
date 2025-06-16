@@ -46,10 +46,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll() // Endpoints de autenticação públicos
-                        .requestMatchers(HttpMethod.POST, "/api/denuncias").hasAnyRole(EnumRole.USUARIO.name().replace("ROLE_", ""), EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.VIGILANTE.name().replace("ROLE_", ""))
-                        .requestMatchers(HttpMethod.GET, "/api/denuncias/minhas").hasRole(EnumRole.USUARIO.name().replace("ROLE_", ""))
-                        .requestMatchers(HttpMethod.GET, "/api/denuncias", "/api/denuncias/{id}").hasAnyRole(EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.VIGILANTE.name().replace("ROLE_", ""))
-                        .requestMatchers(HttpMethod.PUT, "/api/denuncias/{id}/status").hasAnyRole(EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.VIGILANTE.name().replace("ROLE_", ""))
+                        .requestMatchers(HttpMethod.POST, "/api/denuncias").hasAnyRole(EnumRole.MORADOR.name().replace("ROLE_", ""), EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.AGENTE.name().replace("ROLE_", ""))
+                        .requestMatchers(HttpMethod.GET, "/api/denuncias/minhas").hasRole(EnumRole.MORADOR.name().replace("ROLE_", ""))
+                        .requestMatchers(HttpMethod.GET, "/api/denuncias", "/api/denuncias/{id}").hasAnyRole(EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.AGENTE.name().replace("ROLE_", ""))
+                        .requestMatchers(HttpMethod.PUT, "/api/denuncias/{id}/status").hasAnyRole(EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.AGENTE.name().replace("ROLE_", ""))
                         .anyRequest().authenticated() // Todas as outras requisições precisam de autenticação
                 );
 
