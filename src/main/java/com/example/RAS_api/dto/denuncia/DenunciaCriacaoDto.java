@@ -15,6 +15,5 @@ public class DenunciaCriacaoDto {
     private String descricao;
     @NotNull
     private String localizacao;
-    @NotBlank
-    private String fotoUrl;
+    private String fotoUrl; // Removido @NotBlank para tornar opcional
 }

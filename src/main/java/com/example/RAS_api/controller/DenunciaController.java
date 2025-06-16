@@ -19,6 +19,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/denuncias")
@@ -35,7 +38,20 @@ public class DenunciaController {
         try {
             Usuario usuario = (Usuario) authentication.getPrincipal();
             Denuncia denuncia = denunciaService.criarDenuncia(denunciaDto, usuario);
-            return ResponseEntity.status(HttpStatus.CREATED).body(denuncia);
+            
+            // Cria resposta simples para evitar problemas de serialização
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", denuncia.getId());
+            response.put("descricao", denuncia.getDescricao());
+            response.put("localizacao", denuncia.getLocalizacao());
+            response.put("fotoUrl", denuncia.getFotoUrl());
+            response.put("status", denuncia.getStatus().name());
+            response.put("dataCriacao", denuncia.getDataCriacao());
+            response.put("usuarioId", usuario.getId());
+            response.put("usuarioNome", usuario.getNome());
+            response.put("message", "Denúncia criada com sucesso!");
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao criar denúncia: " + e.getMessage());

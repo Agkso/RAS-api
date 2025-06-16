@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -39,17 +40,21 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll() // Endpoints de autenticação públicos
-                        .requestMatchers(HttpMethod.POST, "/api/denuncias").hasAnyRole(EnumRole.MORADOR.name().replace("ROLE_", ""), EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.AGENTE.name().replace("ROLE_", ""))
-                        .requestMatchers(HttpMethod.GET, "/api/denuncias/minhas").hasRole(EnumRole.MORADOR.name().replace("ROLE_", ""))
-                        .requestMatchers(HttpMethod.GET, "/api/denuncias", "/api/denuncias/{id}").hasAnyRole(EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.AGENTE.name().replace("ROLE_", ""))
-                        .requestMatchers(HttpMethod.PUT, "/api/denuncias/{id}/status").hasAnyRole(EnumRole.ADMIN.name().replace("ROLE_", ""), EnumRole.AGENTE.name().replace("ROLE_", ""))
+                        .requestMatchers(HttpMethod.POST, "/api/denuncias").hasAnyRole("MORADOR", "ADMIN", "AGENTE")
+                        .requestMatchers(HttpMethod.GET, "/api/denuncias/minhas").hasRole("MORADOR")
+                        .requestMatchers(HttpMethod.GET, "/api/denuncias", "/api/denuncias/{id}").hasAnyRole("ADMIN", "AGENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/denuncias/{id}/status").hasAnyRole("ADMIN", "AGENTE")
                         .anyRequest().authenticated() // Todas as outras requisições precisam de autenticação
                 );
 

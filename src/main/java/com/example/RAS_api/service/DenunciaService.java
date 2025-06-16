@@ -24,15 +24,30 @@ public class DenunciaService {
 
     @Transactional
     public Denuncia criarDenuncia(DenunciaCriacaoDto denunciaDto, Usuario usuario) {
+        // Cria uma nova instância de usuário apenas com os dados necessários
+        Usuario usuarioSimples = new Usuario();
+        usuarioSimples.setId(usuario.getId());
+        usuarioSimples.setNome(usuario.getNome());
+        usuarioSimples.setEmail(usuario.getEmail());
+        usuarioSimples.setRole(usuario.getRole());
+        
         Denuncia denuncia = new Denuncia();
         denuncia.setDescricao(denunciaDto.getDescricao());
         denuncia.setLocalizacao(denunciaDto.getLocalizacao());
-        denuncia.setFotoUrl(denunciaDto.getFotoUrl());
-        denuncia.setUsuario(usuario);
+        // Só define fotoUrl se não for null ou vazio
+        if (denunciaDto.getFotoUrl() != null && !denunciaDto.getFotoUrl().trim().isEmpty()) {
+            denuncia.setFotoUrl(denunciaDto.getFotoUrl());
+        }
+        denuncia.setUsuario(usuarioSimples);
         denuncia.setStatus(EnumStatusDenuncia.PENDENTE);
         denuncia.setDataCriacao(LocalDateTime.now());
 
-        return denunciaRepository.save(denuncia);
+        Denuncia denunciaSalva = denunciaRepository.save(denuncia);
+        
+        // Limpa a referência do usuário para evitar problemas de serialização
+        denunciaSalva.getUsuario().setDenuncias(null);
+        
+        return denunciaSalva;
     }
 
     public Page<DenunciaDto> listarDenunciasPorUsuario(Long usuarioId, Pageable pageable) {

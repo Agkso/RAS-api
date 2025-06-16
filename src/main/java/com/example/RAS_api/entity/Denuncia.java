@@ -42,7 +42,7 @@ public class Denuncia {
     @Column(name = "feedback_autoridade", columnDefinition = "TEXT")
     private String feedbackAutoridade;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 

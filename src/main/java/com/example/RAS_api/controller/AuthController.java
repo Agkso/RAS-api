@@ -1,5 +1,5 @@
 package com.example.RAS_api.controller;
-import java.util.List;
+
 import com.example.RAS_api.dto.auth.JwtResponseDto;
 import com.example.RAS_api.dto.auth.LoginRequestDto;
 import com.example.RAS_api.dto.auth.RegistroUsuarioDto;
@@ -39,6 +39,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequest) {
         try {
+            System.out.println("Tentativa de login para: " + loginRequest.getEmail());
+            
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
@@ -46,23 +48,25 @@ public class AuthController {
                     )
             );
 
+            System.out.println("Autenticação bem-sucedida para: " + loginRequest.getEmail());
+            
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtTokenProvider.generateToken(authentication);
 
             Usuario usuario = (Usuario) authentication.getPrincipal();
-
-            List<String> roles = List.of(usuario.getRole().name());
 
             return ResponseEntity.ok(new JwtResponseDto(
                     jwt,
                     usuario.getId(),
                     usuario.getNome(),
                     usuario.getEmail(),
-                    roles
+                    usuario.getRole().name()
             ));
         } catch (Exception e) {
+            System.out.println("Erro na autenticação: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Credenciais inválidas");
+                    .body("Credenciais inválidas: " + e.getMessage());
         }
     }
 
