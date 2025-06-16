@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: ${SPRING_JPA_SHOW_SQL}
+    properties:
+      hibernate:
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  secret: ${JWT_SECRET}
+  expirationMs: ${JWT_EXPIRES:86400000}
