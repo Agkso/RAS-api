@@ -18,3 +18,9 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expirationMs: ${JWT_EXPIRES:86400000}
+app:
+  google:
+    maps:
+      api-key: ${GOOGLE_MAPS_API_KEY}
+  imgbb:
+    api-key: ${IMGBB_API_KEY}
