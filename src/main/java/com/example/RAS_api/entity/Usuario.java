@@ -45,7 +45,7 @@ public class Usuario implements UserDetails {
     private String senha;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(columnDefinition = "enum_role", length = 20)
     private EnumRole role;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
