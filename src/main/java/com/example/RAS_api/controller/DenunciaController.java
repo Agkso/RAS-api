@@ -33,12 +33,12 @@ public class DenunciaController {
 
     @PostMapping
     @PreAuthorize("hasRole('MORADOR') or hasRole('ADMIN') or hasRole('AGENTE')")
-    public ResponseEntity<?> criarDenuncia(@Valid @RequestBody DenunciaCriacaoDto denunciaDto, 
-                                          Authentication authentication) {
+    public ResponseEntity<?> criarDenuncia(@Valid @RequestBody DenunciaCriacaoDto denunciaDto,
+                                           Authentication authentication) {
         try {
             Usuario usuario = (Usuario) authentication.getPrincipal();
             Denuncia denuncia = denunciaService.criarDenuncia(denunciaDto, usuario);
-            
+
             // Cria resposta simples para evitar problemas de serialização
             Map<String, Object> response = new HashMap<>();
             response.put("id", denuncia.getId());
@@ -50,7 +50,7 @@ public class DenunciaController {
             response.put("usuarioId", usuario.getId());
             response.put("usuarioNome", usuario.getNome());
             response.put("message", "Denúncia criada com sucesso!");
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -62,11 +62,22 @@ public class DenunciaController {
     @PreAuthorize("hasRole('MORADOR')")
     public ResponseEntity<?> listarMinhasDenuncias(Authentication authentication,
                                                    @RequestParam(defaultValue = "0") int page,
-                                                   @RequestParam(defaultValue = "10") int size) {
+                                                   @RequestParam(defaultValue = "10") int size,
+                                                   @RequestParam(defaultValue = "dataCriacao") String sortBy,
+                                                   @RequestParam(defaultValue = "desc") String sortDir,
+                                                   @RequestParam(required = false) EnumStatusDenuncia status,
+                                                   @RequestParam(required = false) String localizacao,
+                                                   @RequestParam(required = false) String dataInicio,
+                                                   @RequestParam(required = false) String dataFim) {
         try {
             Usuario usuario = (Usuario) authentication.getPrincipal();
-            Pageable pageable = PageRequest.of(page, size, Sort.by("dataCriacao").descending());
-            Page<DenunciaDto> denuncias = denunciaService.listarDenunciasPorUsuario(usuario.getId(), pageable);
+
+            Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+            Page<DenunciaDto> denuncias = denunciaService.listarMinhasDenunciasComFiltros(
+                    usuario.getId(), status, localizacao, dataInicio, dataFim, pageable);
+
             return ResponseEntity.ok(denuncias);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -131,4 +142,3 @@ public class DenunciaController {
         }
     }
 }
-

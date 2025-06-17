@@ -52,8 +52,26 @@ public class DenunciaService {
         return denunciaSalva;
     }
 
-    public Page<DenunciaDto> listarDenunciasPorUsuario(Long usuarioId, Pageable pageable) {
-        Page<Denuncia> denuncias = denunciaRepository.findByUsuarioId(usuarioId, pageable);
+    public Page<DenunciaDto> listarMinhasDenunciasComFiltros(Long usuarioId, EnumStatusDenuncia status, 
+                                                            String localizacao, String dataInicio, 
+                                                            String dataFim, Pageable pageable) {
+        LocalDateTime inicio = null;
+        LocalDateTime fim = null;
+        
+        try {
+            if (dataInicio != null && !dataInicio.isEmpty()) {
+                inicio = LocalDateTime.parse(dataInicio + "T00:00:00");
+            }
+            if (dataFim != null && !dataFim.isEmpty()) {
+                fim = LocalDateTime.parse(dataFim + "T23:59:59");
+            }
+        } catch (Exception e) {
+            // Se houver erro no parsing das datas, ignora os filtros de data
+        }
+        
+        Page<Denuncia> denuncias = denunciaRepository.findByUsuarioIdWithFilters(
+            usuarioId, status, localizacao, inicio, fim, pageable);
+        
         return denuncias.map(this::convertToDto);
     }
 

@@ -23,10 +23,11 @@ public class Denuncia {
     private Long id;
 
     @NotBlank
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descricao")
     private String descricao;
 
     @NotNull
+    @Column(name = "localizacao") // ADICIONE ESTA LINHA
     private String localizacao;
 
     @Column(name = "latitude")
